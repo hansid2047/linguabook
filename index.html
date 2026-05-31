@@ -1236,8 +1236,8 @@ document.getElementById('skipBack1').addEventListener('click', () => speakOneWor
 document.getElementById('skipFwd1') .addEventListener('click', () => speakOneWord(curWordPos + 1));
 
 // ── ⏮10 / 10⏭ 按鈕：跳 10 字，僅移動不單獨發音 ─────────
-document.getElementById('skipBack10').addEventListener('click', () => seekTo(curWordPos - 10));
-document.getElementById('skipFwd10') .addEventListener('click', () => seekTo(curWordPos + 10));
+document.getElementById('skipBack1').addEventListener('click', () => seekTo(curWordPos - 1));
+document.getElementById('skipFwd1') .addEventListener('click', () => seekTo(curWordPos + 1));
 
 // ── 返回書庫 ─────────────────────────────────────────────
 document.getElementById('backBtn').addEventListener('click', () => {
