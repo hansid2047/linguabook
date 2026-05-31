@@ -1205,8 +1205,15 @@ function speakFrom(pos) {
     }, delay);
   }
 
-  utt.onend   = () => { clearTimeout(wordTimerId); if (isPlaying) speakFrom(endPos); };
-  utt.onerror = () => { clearTimeout(wordTimerId); if (isPlaying) speakFrom(endPos); };
+let advanced = false;
+function advanceOnce(){
+  if (advanced) return;
+  advanced = true;
+  clearTimeout(wordTimerId);
+  if (isPlaying) speakFrom(endPos);
+}
+utt.onend = advanceOnce;
+utt.onerror = advanceOnce;
   synth.speak(utt);
 }
 
