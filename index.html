@@ -1089,7 +1089,29 @@ function clearForm() {
 // ════════════════════════════════════════════════════
 // 九、播放器
 // ════════════════════════════════════════════════════
-function tokenize(text) {
+function speakOneWord(pos) {
+  if (!curBook) return;
+  const np = Math.max(0, Math.min(wordIndices.length - 1, pos));
+  const word = tokens[wordIndices[np]]?.raw || '';
+  const clean = word.replace(/[^a-zA-Z'-]/g, '');
+  if (!clean) return;
+
+  // 只唸一個字：先停止任何正在播的 chunk
+  synth.cancel();
+  clearTimeout(wordTimerId);
+
+  // 更新游標與畫面
+  curWordPos = np;
+  updateHighlight();
+  updateProgress();
+
+  const utt = new SpeechSynthesisUtterance(clean);
+  utt.lang = 'en-US';
+  utt.rate = speed;
+  synth.speak(utt);
+}
+  
+  function tokenize(text) {
   const re = /(\s+|[a-zA-Z'''-]+|[^a-zA-Z\s'''-]+)/g;
   const out = [];
   let m;
@@ -1276,9 +1298,21 @@ document.getElementById('progressTrack').addEventListener('click', e => {
 document.addEventListener('keydown', e => {
   if (!document.getElementById('scr-player').classList.contains('show')) return;
   if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-  if (e.code === 'Space')      { e.preventDefault(); document.getElementById('play-pause-btn').click(); }
-  if (e.code === 'ArrowLeft')  seekTo(curWordPos - 1);
-  if (e.code === 'ArrowRight') seekTo(curWordPos + 1);
+
+  if (e.code === 'Space') {
+    e.preventDefault();
+    document.getElementById('play-pause-btn').click();
+  }
+
+  if (e.code === 'ArrowLeft') {
+    e.preventDefault();
+    speakOneWord(curWordPos - 1);
+  }
+
+  if (e.code === 'ArrowRight') {
+    e.preventDefault();
+    speakOneWord(curWordPos + 1);
+  }
 });
 
 // ════════════════════════════════════════════════════
